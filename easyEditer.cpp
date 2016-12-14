@@ -7,7 +7,10 @@ String functionPointer[] = {
 	"delay",
 	"nefry.setled",
 	"if",
-	"pwmWrite"
+	"pwmWrite",
+	"cocoabit.pwmWrite",
+	"tone",
+	"cocoabit.tone"
 };
 //関数を検索します。
 int easyEditer::searchMode(const char * mode) {
@@ -20,7 +23,8 @@ int easyEditer::searchMode(const char * mode) {
 
 int easyEditer::createCode(int mode, char * c, bool run)
 {
-	int state, pini, st[5];
+	int state, pini=-1, st[5];
+	long longState[2];
 	char *ret;
 	if ((ret = strchr(c, '(')) != NULL) {
 		spt = ret - c + 1;
@@ -90,15 +94,28 @@ int easyEditer::createCode(int mode, char * c, bool run)
 
 			return 0;
 			break;
-		case 6:
+		case 6://if
 
 			return 0;
 			break;
 		case 7://pwmWrite
 			if ((pini = convertPin(c)) == -1)return -1;
-			if((state = convertValue(c, ')', 0, 99)) == -1)return -2;
+		case 8://cocoabit.pwmWrite
+			if (pini == -1)pini = D3;
+			if ((state = convertValue(c, ')', 0, 99)) == -1)return -2;
 			if (run == 1) {
-				CocoaBit.pwmWrite(D3, state);
+				CocoaBit.pwmWrite(pini, state);
+			}
+			return 0;
+			break;
+		case 9://tone
+			if ((pini = convertPin(c)) == -1)return -1;	
+		case 10://cocoabit.tone
+			if (pini == -1)pini = D3;
+			if ((longState[0] = convertValueLong(c, ',', 65535)) == -1)return -2;
+			if ((longState[1] = convertValueLong(c, ')', 2147483647)) == -1)return -3;
+			if (run == 1) {
+				tone(pini, (unsigned int) longState[0],longState[1]);
 			}
 			return 0;
 			break;
@@ -225,6 +242,39 @@ int easyEditer::convertValue(char *s, const char end, bool highorlow, int high, 
 			else
 				return low;
 		}
+	}
+	else return -1;
+}
+//プログラムの引数を数値化する。
+//(検索元文字列,区切り文字,high,low,区切り無効化チェック)
+long easyEditer::convertValueLong(char *s, const char end, long high, int low, bool check)
+{
+	char *ret;
+	String states;
+	if (check == 1) {
+		states = s;
+	}
+	else {
+		if ((ret = strchr(s + spt, end)) != NULL) {
+			int i = ret - s;//終了文字
+			for (int j = spt; j < i; j++)states += s[j];
+			spt = i + 1;
+		}
+		else {
+			return -1;
+		}
+	}
+	//Nefry.println(states);
+	if (states.length() != 0) {
+
+		if (low <= states.toInt())
+			if (high >= states.toInt())
+				return states.toInt();//文字のときは0を返す
+			else
+				return high;
+		else
+			return low;
+
 	}
 	else return -1;
 }

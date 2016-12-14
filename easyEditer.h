@@ -36,7 +36,7 @@ private:
 
 	bool convertIf(const char* s);
 
-
+	long convertValueLong(char *s, const char end, unsigned long high, int low, bool check);
 
 
 
