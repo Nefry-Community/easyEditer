@@ -7,8 +7,8 @@ String functionPointer[] = {
 	"delay",
 	"nefry.setled",
 	"if",
-	"pwmWrite",
-	"cocoabit.pwmWrite",
+	"pwmwrite",
+	"cocoabit.pwmwrite",
 	"tone",
 	"cocoabit.tone"
 };
@@ -279,11 +279,11 @@ long easyEditer::convertValueLong(char *s, const char end, long high, int low, b
 	else return -1;
 }
 
-void easyEditer::begin(String pageName, ESP8266WebServer* webServer)
+void easyEditer::begin(String pageName)
 {
 	_edittext = "";
 	_page = pageName;
-	webServer->on(("/" + _page).c_str(), [&]() {
+	Nefry.getWebServer()->on(("/" + _page).c_str(), [&]() {
 		String content = F(
 			"<!DOCTYPE HTML><html><head><meta charset=\"UTF-8\">"
 			"<title>NefryEasyEditer</title><link rel = \"stylesheet\" type = \"text/css\" href = \"/nefry_css\">"
@@ -297,9 +297,9 @@ void easyEditer::begin(String pageName, ESP8266WebServer* webServer)
 		content += F("</textarea> </div></div><div class=\"footer\"><button type = \"button\" onclick=\"location.href='/w");
 		content += _page;
 		content += F("'\">Program Start</button><input type=\"submit\" value=\"Save\"> </div></form><a href=\"/\">Back to top</a></div></body></html>");
-		webServer->send(200, "text/html", content);
+		Nefry.getWebServer()->send(200, "text/html", content);
 	});
-	webServer->on(("/w" + _page).c_str(), [&]() {
+	Nefry.getWebServer()->on(("/w" + _page).c_str(), [&]() {
 		if (1) {
 			String content = F(
 				"<!DOCTYPE HTML><html><head><meta charset=\"UTF-8\">"
@@ -312,12 +312,12 @@ void easyEditer::begin(String pageName, ESP8266WebServer* webServer)
 			content += F("</p><a href=\"/");
 			content += _page;
 			content += F("\">Back to Editer</a><br><a href=\"/\">Back to top</a></div></body></html>");
-			webServer->send(200, "text/html", content);
+			Nefry.getWebServer()->send(200, "text/html", content);
 		}
 		setTrigger();
 	});
-	webServer->on(("/set_" + _page).c_str(), [&]() {
-		_edittext = webServer->arg("ee");
+	Nefry.getWebServer()->on(("/set_" + _page).c_str(), [&]() {
+		_edittext = Nefry.getWebServer()->arg("ee");
 		String content = F(
 			"<!DOCTYPE HTML><html><head><meta charset=\"UTF-8\">"
 			"<title>NefryEasyEditer</title><link rel = \"stylesheet\" type = \"text/css\" href = \"/nefry_css\">"
@@ -339,7 +339,7 @@ void easyEditer::begin(String pageName, ESP8266WebServer* webServer)
 		content += F("\">Back to NefryEasyEditer</a><br><a href=\"/\">Back to top</a></div></body></html>");
 		_edittext.replace(" ", "");
 		_edittext.replace("\r\n", "");
-		webServer->send(200, "text/html", content);
+		Nefry.getWebServer()->send(200, "text/html", content);
 	});
 	Nefry.setIndexLink(_page.c_str(), ("/" + _page).c_str());
 }

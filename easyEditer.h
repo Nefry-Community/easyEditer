@@ -6,7 +6,7 @@
 class easyEditer
 {
 public:
-	void begin(String pageName, ESP8266WebServer* webServer = Nefry.getWebServer());
+	void begin(String pageName);
 
 	//これを呼ばれたときに書き込まれているプログラムを実行します。
 	String setTrigger() { return compile(1); }
