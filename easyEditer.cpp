@@ -6,7 +6,8 @@ String functionPointer[] = {
 	"analogwrite",
 	"delay",
 	"nefry.setled",
-	"if"
+	"if",
+	"pwmWrite"
 };
 //関数を検索します。
 int easyEditer::searchMode(const char * mode) {
@@ -91,6 +92,14 @@ int easyEditer::createCode(int mode, char * c, bool run)
 			break;
 		case 6:
 
+			return 0;
+			break;
+		case 7://pwmWrite
+			if ((pini = convertPin(c)) == -1)return -1;
+			if((state = convertValue(c, ')', 0, 99)) == -1)return -2;
+			if (run == 1) {
+				CocoaBit.pwmWrite(D3, state);
+			}
 			return 0;
 			break;
 		default:

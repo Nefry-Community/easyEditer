@@ -2,6 +2,7 @@
 #define EASYEDIT_h
 #include<Arduino.h>
 #include<Nefry.h>
+#include<CocoaBit.h>
 class easyEditer
 {
 public:
