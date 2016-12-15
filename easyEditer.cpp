@@ -8,9 +8,7 @@ String functionPointer[] = {
 	"nefry.setled",
 	"if",
 	"pwmwrite",
-	"cocoabit.pwmwrite",
 	"tone",
-	"cocoabit.tone"
 };
 //関数を検索します。
 int easyEditer::searchMode(const char * mode) {
@@ -100,18 +98,14 @@ int easyEditer::createCode(int mode, char * c, bool run)
 			break;
 		case 7://pwmWrite
 			if ((pini = convertPin(c)) == -1)return -1;
-		case 8://cocoabit.pwmWrite
-			if (pini == -1)pini = D3;
 			if ((state = convertValue(c, ')', 0, 99)) == -1)return -2;
 			if (run == 1) {
 				CocoaBit.pwmWrite(pini, state);
 			}
 			return 0;
 			break;
-		case 9://tone
+		case 8://tone
 			if ((pini = convertPin(c)) == -1)return -1;	
-		case 10://cocoabit.tone
-			if (pini == -1)pini = D3;
 			if ((longState[0] = convertValueLong(c, ',', 65535)) == -1)return -2;
 			if ((longState[1] = convertValueLong(c, ')', 2147483647)) == -1)return -3;
 			if (run == 1) {
