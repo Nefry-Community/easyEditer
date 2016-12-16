@@ -106,11 +106,14 @@ int easyEditer::createCode(int mode, char * c, bool run)
 			break;
 		case 8://tone
 			if ((pini = convertPin(c)) == -1)return -1;	
-			if ((longState[0] = convertValueLong(c, ',', 65535)) == -1)return -2;
+			if ((longState[0] = convertValueLong(c, ',', 65535,1)) == -1)return -2;
 			if ((longState[1] = convertValueLong(c, ')', 2147483647)) == -1)return -3;
 			if (run == 1) {
 				tone(pini, (unsigned int) longState[0],longState[1]);
 			}
+			/*Nefry.println("tone:");
+			Nefry.println((unsigned int)longState[0]);
+			Nefry.println(longState[1]);*/
 			return 0;
 			break;
 		default:
